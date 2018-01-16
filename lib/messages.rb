@@ -13,22 +13,20 @@ module Messages
 	# @description																This function will submit an http post request with a message to send to a student's mentor.
 	# @param				{Hash}				options					The 'options' has should contain key value pairs corresponding to a Bloc message submission. If submitting to an existing thread, a 'token' and 'stripped-text' key are required. If submitting a new thread, a 'subject', 'recipient_id', and 'message' are required.
 	def create_message(options = {})
-		defaults = if options.has_key?(:message) && !options.has_key?(:'stripped-text') && !options.has_key?('stripped-text') then
-			{}.merge!({'stripped-text': options.delete(:message)})
-		else
-			{}
-		end
-		message = defaults.merge!(options).delete_if {|k,v| v.nil? || v.to_s.empty?}
+		has_message = options.has_key?(:message) && !options.has_key?(:'stripped-text') && !options.has_key?('stripped-text')
+		defaults = has_message ? {'stripped-text': options.delete(:message)} : {}
+			
+		message_options = defaults.merge!(options).delete_if {|k,v| v.nil? || v.to_s.empty?}
 		
-		valid_with_token = message.has_key?(:token)
-		valid_new_thread = !message.has_key?(:token)  && message.has_key?(:recipient_id) && message.has_key?(:subject)
-		has_message = message.has_key?(:'stripped-text') || message.has_key?('stripped-text')
+		valid_with_token = message_options.has_key?(:token)
+		valid_new_thread = !message_options.has_key?(:token)  && message_options.has_key?(:recipient_id) && message_options.has_key?(:subject)
+		has_stripped_text = message_options.has_key?(:'stripped-text') || message_options.has_key?('stripped-text')
 		
-		if (valid_with_token || valid_new_thread) && has_message
-			response = self.class.post '/messages', body: message, headers: { 'authorization': @auth_token }
-			Helpers.parse_response(response, message)
+		if (valid_with_token || valid_new_thread) && has_stripped_text
+			response = self.class.post '/messages', body: message_options, headers: { 'authorization': @auth_token }
+			Helpers.parse_response(response, message_options)
 		else
-			raise "The message options were not valid. #{message}"
+			raise "The message options were not valid. #{message_options}"
 		end
 	end
 end

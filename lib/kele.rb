@@ -34,7 +34,7 @@ class Kele
 	# @description								This function will return the availability of a student's mentor.
 	# @param {Integer} mentor_id	The id of the mentor whose availability you want to check.
 	# @return {Array<Hash>} 			
-	def get_mentor_availability(mentor_id=get_me['current_enrollment']['mentor_id'])
+	def get_mentor_availability(mentor_id)
 		response = self.class.get "/mentors/#{mentor_id}/student_availability", headers: { 'authorization': @auth_token }
 		Helpers.parse_response(response)
 	end
