@@ -12,14 +12,14 @@ module Helpers
     end
 	end
 	
-	# @function															get_attribute
-	# @description													A function that will return the value of a key within a JSON object. By default it will search recursively, but you may specify if you only want to search the top level.
-	# @param						{Hash}		input			The hash object within which you want to search.
-	# @param						{String}	key				The key that holds the value you're interested in.
-	# @param						{Hash}		options		An options hash. Supports an 'at_root' attribute (whether or not you wish to search only the topmost level of the Hash. By default this is set to 'false') and an 'all' attribute (whether you want all the matches or just the first match).
-	# @return						{any}								Returns the value of the desired key, if found, otherwise returns nil.	
+	# @function																			get_attribute
+	# @description																	A function that will return the value of a key within a JSON object. By default it will search recursively, but you may specify if you only want to search the top level.
+	# @param					{Hash}							input			The hash object within which you want to search.
+	# @param					{String}						key				The key that holds the value you're interested in.
+	# @param					{Hash}							options		An options hash. Supports an 'at_root' attribute (whether or not you wish to search only the topmost level of the Hash. By default this is set to 'false') and an 'all' attribute (whether you want all the matches or just the first match).
+	# @return					{any}													Returns the value of the desired key, if found, otherwise returns nil.	
 	def Helpers.get_attribute(input, query, options = { at_root: false, all: false, parent: false })
-		puts "Getting attributes that match '#{query}'. at_root: #{options[:at_root]}; all: #{options[:all]}; parent: #{options[:parent]}"
+		# puts "Getting attributes that match '#{query}'. at_root: #{options[:at_root]}; all: #{options[:all]}; parent: #{options[:parent]}"
 		results = []
 		input_is_hash = input.is_a? Hash
 		if input_is_hash || input.is_a?(Array)
@@ -30,11 +30,11 @@ module Helpers
 				this_result = nil
 				if input_is_hash && key.to_s.match(query.to_s)
 					# if the current hash key matches search pattern, add it to results.
-					puts "'#{key}' is a match!"
+					# puts "'#{key}' is a match!"
 					this_result = options[:parent] ? input : value
 				elsif (value.is_a?(Hash) || value.is_a?(Array)) && !options[:at_root]
 					# not a match, recurse if value is a Hash or an Array and the options require it.
-					puts "'#{key}' requires recursion."
+					# puts "'#{key}' requires recursion."
 					this_result = Helpers.get_attribute(value, query, options)
 				end
 				if !this_result.nil?
