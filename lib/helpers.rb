@@ -4,7 +4,7 @@ module Helpers
 	# @param					{HTTPartyResponse}	response	The response object returned by the HTTParty gem's HTTP requests.
 	# @return 				{Hash|Array}									A hash or array containing the body of the HTTP response (if successful).
 	def Helpers.parse_response(response, payload={}, headers={})
-    body = JSON.parse response.body unless response.body.empty?
+    body = JSON.parse(response.body) unless response.body.empty?
     if response.code == 200
     	body || true
     else

@@ -33,7 +33,27 @@ module Roadmap
 								comment: comment, 
 								enrollment_id: enrollment_id }
 		response = self.class.post "/checkpoint_submissions", body: options, headers: { authorization: @auth_token }
+		binding.pry
 		Helpers.parse_response(response)
-		return
 	end
+	
+	# @function																								create_submission
+	# @description																						This function will submit a checkpoint and assignment
+	# @param					{Integer}				checkpoint_id						The ID of the checkpoint you wish to submit too.
+	# @param					{String}				assignment_branch				The name of the assignment branch you want to submit.		
+	# @param					{String}				assignment_commit_link	The commit identifier.
+	# @param					{String}				comment									The comment you wish to attach to this Bloc submission.
+	def update_submission(id, checkpoint_id, assignment_branch, assignment_commit_link, comment="")
+		enrollment_id = Helpers.get_attribute(get_me, 'enrollment')['id']
+		options = { id: id,
+								assignment_branch: assignment_branch,
+								assignment_commit_link: assignment_commit_link, 
+								checkpoint_id: checkpoint_id, 
+								comment: comment, 
+								enrollment_id: enrollment_id }
+		response = self.class.post "/checkpoint_submissions/#{checkpoint_id}", body: options, headers: { authorization: @auth_token }
+		Helpers.parse_response(response)
+	end
+	
+	
 end
