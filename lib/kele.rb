@@ -19,24 +19,25 @@ class Kele
 	# @return {Array<Hash>}  
 	def initialize(email, password)
 		response = self.class.post "/sessions", body: {email: email, password: password}
-		@auth_token = Helpers.parse_response(response)['auth_token']
+		@auth_token = Helpers.get_attribute(Helpers.parse_response(response), 'auth_token')
 	end
 	
-	# @function					get_me
-	# @description			This function will return the data associated with the current user.
-	# @return {Hash}		
+	# @function																						get_me
+	# @description																				This function will return the data associated with the current user.
+	# @return 					{Hash}		
 	def get_me
 		response = self.class.get "/users/me", headers: { 'authorization': @auth_token }
 		Helpers.parse_response(response)
 	end
 	
-	# @function
-	# @description This function will return the availability of a student's mentor.
-	# @param {int} mentor_id The id of the mentor whose availability you want to check.
-	# @return {hash}  
+	# @function																						get_mentor_availability
+	# @description																				This function will return the availability of a student's mentor.
+	# @param						{Integer} 				mentor_id				The id of the mentor whose availability you want to check.
+	# @return 					{Array<Hash>} 			
 	def get_mentor_availability(mentor_id)
-		response = self.class.get "/mentors/#{mentor_id}/student_availability", headers: { authorization: @auth_token }
-		parse_response(response)
+		mentor_id = Helpers.get_attribute(get_me, 'mentor_id') if mentor_id.nil?
+		response = self.class.get "/mentors/#{mentor_id}/student_availability", headers: { 'authorization': @auth_token }
+		Helpers.parse_response(response)
 	end
 	
 end
